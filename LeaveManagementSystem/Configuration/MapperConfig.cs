@@ -1,5 +1,5 @@
-﻿using AutoMapper;
-using LeaveManagementSystem.Data;
+﻿using LeaveManagementSystem.Data;
+using AutoMapper;
 
 namespace LeaveManagementSystem.Models.Configuration
 {
