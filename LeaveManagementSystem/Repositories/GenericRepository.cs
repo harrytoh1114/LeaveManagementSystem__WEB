@@ -18,7 +18,13 @@ namespace LeaveManagementSystem.Repositories
             return entity;
         }
 
-        public async Task DeletAsync(int id)
+		public async Task AddRangeAsync(List<T> entities)
+		{
+			await _context.AddRangeAsync(entities);
+            await _context.SaveChangesAsync();
+		}
+
+		public async Task DeletAsync(int id)
         {
             var entity = await GetAsync(id);
             _context.Set<T>().Remove(entity);

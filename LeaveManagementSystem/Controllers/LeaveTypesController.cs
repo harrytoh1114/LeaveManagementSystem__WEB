@@ -10,20 +10,26 @@ using AutoMapper;
 using LeaveManagementSystem.Models;
 using LeaveManagementSystem.Contracts;
 using Microsoft.AspNetCore.Authorization;
+using LeaveManagementSystem.Constants;
+using LeaveManagementSystem.Repositories;
 
 namespace LeaveManagementSystem.Controllers
 {
 	[Authorize(Roles = Roles.Administrator)]
 	public class LeaveTypesController : Controller
     {
+        private readonly ApplicationDbContext context;
         private readonly ILeaveTypeRepository leaveTypeRepository;
         private readonly IMapper mapper;
+		private readonly ILeaveAllocationRepository leaveAllocationRepository;
 
-        public LeaveTypesController(ILeaveTypeRepository leaveTypeRepository, IMapper mapper)
+		public LeaveTypesController(ApplicationDbContext context, ILeaveTypeRepository leaveTypeRepository, IMapper mapper, ILeaveAllocationRepository leaveAllocationRepository)
         {
+            this.context = context;
             this.leaveTypeRepository = leaveTypeRepository;
             this.mapper = mapper;
-        }
+			this.leaveAllocationRepository = leaveAllocationRepository;
+		}
 
         // GET: LeaveTypes
         public async Task<IActionResult> Index()
@@ -131,5 +137,13 @@ namespace LeaveManagementSystem.Controllers
 
             return RedirectToAction(nameof(Index));
         }
-    }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AllocateLeave(int id)
+		{
+            await leaveAllocationRepository.LeaveAllocation(id);
+			return RedirectToAction(nameof(Index));
+		}
+	}
 }
