@@ -133,7 +133,7 @@ namespace LeaveManagementSystem.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
 
-            await leaveTypeRepository.DeletAsync(id);
+            await leaveTypeRepository.DeleteAsync(id);
 
             return RedirectToAction(nameof(Index));
         }
