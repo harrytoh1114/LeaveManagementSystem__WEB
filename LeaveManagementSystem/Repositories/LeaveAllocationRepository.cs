@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using LeaveManagementSystem.Constants;
 using LeaveManagementSystem.Contracts;
 using LeaveManagementSystem.Data;
 using LeaveManagementSystem.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
@@ -16,13 +18,17 @@ namespace LeaveManagementSystem.Repositories
         private readonly UserManager<Employee> _userManger;
         private readonly ILeaveTypeRepository _leaveTypeRepository;
         private readonly IMapper mapper;
+        private readonly AutoMapper.IConfigurationProvider configurationProvider;
+        private readonly IEmailSender emailSender;
 
-        public LeaveAllocationRepository(ApplicationDbContext context, UserManager<Employee> userManger, ILeaveTypeRepository leaveTypeRepository, IMapper mapper) : base(context)
+        public LeaveAllocationRepository(ApplicationDbContext context, UserManager<Employee> userManger, ILeaveTypeRepository leaveTypeRepository, IMapper mapper, AutoMapper.IConfigurationProvider configurationProvider, IEmailSender emailSender) : base(context)
         {
             _context = context;
             _userManger = userManger;
             _leaveTypeRepository = leaveTypeRepository;
             this.mapper = mapper;
+            this.configurationProvider = configurationProvider;
+            this.emailSender = emailSender;
         }
 
         public async Task<bool> AllocationExists(string employeeId, int leaveTypeId, int period)
@@ -37,13 +43,14 @@ namespace LeaveManagementSystem.Repositories
             var allocations = await _context.LeaveAllocations
                 .Include(a => a.LeaveType)
                 .Where(a => a.EmployeeId == employeeId)
+                .ProjectTo<LeaveAllocationVM>(configurationProvider)
                 .ToListAsync();
 
             var employee = await _userManger.FindByIdAsync(employeeId);
 
             var employeeAllocationModel = mapper.Map<EmployeeAllocationVM>(employee);
 
-            employeeAllocationModel.LeaveAllocations = mapper.Map<List<LeaveAllocationVM>>(allocations);
+            employeeAllocationModel.LeaveAllocations = allocations;
 
             return employeeAllocationModel;
         }
@@ -52,6 +59,7 @@ namespace LeaveManagementSystem.Repositories
         {
             var allocation = await _context.LeaveAllocations
                 .Include(a => a.LeaveType)
+                .ProjectTo<LeaveAllocationEditVM>(configurationProvider)
                 .FirstOrDefaultAsync(a => a.Id == id);
 
 
@@ -62,10 +70,10 @@ namespace LeaveManagementSystem.Repositories
 
             var employee = await _userManger.FindByIdAsync(allocation.EmployeeId);
 
-            var model = mapper.Map<LeaveAllocationEditVM>(allocation);
-            model.Employee = mapper.Map<EmployeeListVM>(await _userManger.FindByIdAsync(allocation.EmployeeId));
 
-            return model;
+            allocation.Employee = mapper.Map<EmployeeListVM>(await _userManger.FindByIdAsync(allocation.EmployeeId));
+
+            return allocation;
         }
 
         public async Task LeaveAllocation(int leaveTypeId)
@@ -74,6 +82,7 @@ namespace LeaveManagementSystem.Repositories
             var period = DateTime.Now.Year;
             var leaveType = await _leaveTypeRepository.GetAsync(leaveTypeId);
             var allocations = new List<LeaveAllocation>();
+            var employeeWithNewAllocations = new List<Employee>();
 
             foreach (var employee in employees)
             {
@@ -92,6 +101,11 @@ namespace LeaveManagementSystem.Repositories
             }
 
             await AddRangeAsync(allocations);
+
+            foreach (var employee in employeeWithNewAllocations)
+            {
+                await emailSender.SendEmailAsync(employee.Email, $"Leave Allocation Posted for {period}", $"Your leave request from " + $"Your {leaveType.Name} " + $"has been posted for the period of {period}. You have been given {leaveType.DefaultDays}.");
+            }
 
         }
 
@@ -114,10 +128,10 @@ namespace LeaveManagementSystem.Repositories
 
         }
 
-		public async Task<LeaveAllocation?> GetEmployeeAllocation(string employeeId, int leaveTypeId)
-		{
+        public async Task<LeaveAllocation?> GetEmployeeAllocation(string employeeId, int leaveTypeId)
+        {
             return await _context.LeaveAllocations.FirstOrDefaultAsync(a => a.EmployeeId == employeeId && a.LeaveTypeId == leaveTypeId);
-             
+
         }
-	}
+    }
 }
