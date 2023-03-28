@@ -3,7 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33424.131
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeaveManagementSystem", "LeaveManagementSystem\LeaveManagementSystem.csproj", "{B5755547-FE11-4E67-952B-A70297B7A395}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LeaveManagementSystem", "LeaveManagementSystem\LeaveManagementSystem.csproj", "{B5755547-FE11-4E67-952B-A70297B7A395}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LeaveManagement.Data", "LeaveManagement.Data\LeaveManagement.Data.csproj", "{A46668B9-24D1-4BEC-87F6-1B8FE1BE3387}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LeaveManagement.Common", "LeaveManagement.Common\LeaveManagement.Common.csproj", "{731A8340-61F1-4DE4-9430-640F48F3A8E3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeaveManagement.Application", "LeaveManagement.Application\LeaveManagement.Application.csproj", "{032B2EDC-FB0E-4004-A0B7-B397C3B87E33}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +21,18 @@ Global
 		{B5755547-FE11-4E67-952B-A70297B7A395}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B5755547-FE11-4E67-952B-A70297B7A395}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B5755547-FE11-4E67-952B-A70297B7A395}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A46668B9-24D1-4BEC-87F6-1B8FE1BE3387}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A46668B9-24D1-4BEC-87F6-1B8FE1BE3387}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A46668B9-24D1-4BEC-87F6-1B8FE1BE3387}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A46668B9-24D1-4BEC-87F6-1B8FE1BE3387}.Release|Any CPU.Build.0 = Release|Any CPU
+		{731A8340-61F1-4DE4-9430-640F48F3A8E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{731A8340-61F1-4DE4-9430-640F48F3A8E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{731A8340-61F1-4DE4-9430-640F48F3A8E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{731A8340-61F1-4DE4-9430-640F48F3A8E3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{032B2EDC-FB0E-4004-A0B7-B397C3B87E33}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{032B2EDC-FB0E-4004-A0B7-B397C3B87E33}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{032B2EDC-FB0E-4004-A0B7-B397C3B87E33}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{032B2EDC-FB0E-4004-A0B7-B397C3B87E33}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
